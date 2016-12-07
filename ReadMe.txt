@@ -7,7 +7,7 @@ Lets suppose that we need to sort this list of integers:
 
 sortme = [3, 5, -1]
 
-// SHORT VISUAL EXPLANATION WITH EXAMPLE//
+// Short visual explanation with example //
 
 [3, 5, -1]
 
@@ -24,7 +24,7 @@ sortme = [3, 5, -1]
 
  -> push ones to right
 
--1 [1, 1, 1]
+ex-1 [1, 1, 1]
  0 [0, 1, 1]
  1 [0, 1, 1]
  2 [0, 1, 1]
@@ -42,7 +42,7 @@ sortme = [3, 5, -1]
 
  Sorted!
 
-// LONG EXPLANATION WITH EXAMPLE//
+// long explanation with example //
 
 1. step:
 - calculate min and max elements of sortme:
