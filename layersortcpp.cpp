@@ -1,4 +1,13 @@
-#include "stdafx.h"
+#include <stdio.h>
+#include <tchar.h>
+
+#include <iostream>
+#include <vector>
+#include <array>
+#include <map>
+#include <random>
+#include <functional>
+#include <sstream>
 
 typedef std::vector<int> list;
 typedef std::vector<list> matrix;
