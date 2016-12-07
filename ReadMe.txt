@@ -121,7 +121,7 @@ columnSums = [1, 5, 7]
 
 9. step:
 - calculate actual value from columnSums by adding offset to each of values
-sorted = [1 + (-2), 5 + (-2), 7 + (-2)]
+sorted = [1 + offset, 5 + offset, 7 + offset]
 sorted = [-1, 3, 5]
 
 Sorted!
