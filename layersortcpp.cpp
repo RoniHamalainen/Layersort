@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <tchar.h>
-
 #include <iostream>
 #include <vector>
 #include <array>
@@ -15,89 +14,97 @@ typedef std::vector<list> matrix;
 int GetMaxium(list sortme)
 {
 	int maxium = sortme.at(0);
-
 	for (unsigned int i = 0; i < sortme.size(); i++)
 	{
 		int currentValue = sortme.at(i);
-
 		if (currentValue > maxium)
 			maxium = currentValue;
 	}
-
 	return maxium;
 }
 
 int GetMinium(list sortme)
 {
 	int minium = sortme.at(0);
-
 	for (unsigned int i = 0; i < sortme.size(); i++)
 	{
 		int currentValue = sortme.at(i);
-
 		if (currentValue < minium)
 			minium = currentValue;
 	}
-
 	return minium;
+}
+
+list ColumnSums(matrix m)
+{
+	const int ylength = m.size();
+	const int xlength = m.at(0).size();
+	list columnSums(xlength);
+	list::iterator listIterator;
+
+	for (int x = 0; x < xlength; x++)
+	{
+		int columnSum = 0;
+		for (int y = 0; y < ylength; y++)
+			columnSum += m.at(y).at(x);
+		columnSums.at(x) = columnSum;
+	}
+	return columnSums;
 }
 
 list lsort(list sortme)
 {	
-	int minium = GetMinium(sortme);
-	int maxium = GetMaxium(sortme);
+	const int minium = GetMinium(sortme);
+	const int maxium = GetMaxium(sortme);
 
-	int xlength = sortme.size();
-	int ylength = maxium - minium + 1;
+	const int xlength = sortme.size();
+	const int ylength = maxium - minium + 1;
 
-	int difference = minium - 1;
+	const int offset = std::abs(minium);
 
-	// create reference list
-	list referenceList(ylength);
-	for (int y = 0; y < ylength; y++)
-		referenceList.at(y) = y;
+	// create list of integers + offset
+	list offsetList(xlength);
+	for (int x = 0; x < xlength; x++)
+		offsetList.at(x) = sortme.at(x) + offset;
 
-	// create reference map
-	std::map<int, int> referenceMap;
-	for (int y = 0; y < ylength; y++)
-		referenceMap[referenceList.at(y)] = minium + y;
+	// create column matrix
+	matrix m(xlength, list(ylength));
+	for (int i = 0; i < xlength; i++)
+	{
+		int value = offsetList.at(i);
+		list row(ylength, 0);
+		for (int j = 0; j < value; j++)
+			row.at(j) = 1;
+		m.at(i) = row;
+	}
 
-	// create matrix
-	matrix m(ylength, list(xlength));
+	// get column sums
+	list columnSums = ColumnSums(m);
+
+	// create pushed matrix
+	matrix pm(ylength, list(xlength));
 	for (int y = 0; y < ylength; y++)
 	{
 		list row(xlength, 0);
-		for (int x = 0; x < xlength; x++)
-			if (sortme.at(x) >= referenceMap[y])
-				row.at(x) = 1;
-		m.at(y) = row;
-	}
+		int sum = columnSums.at(y);
 
-	// push to right
-	matrix mr(ylength, list(xlength));
-	for (int y = 0; y < ylength; y++)
-	{
-		int rowsum = 0;
-		for (int item : m.at(y))
-			rowsum += item;
+		// start at right
+		int istart = xlength - 1;
+		for (; sum != 0; sum--)
+		{
+			row.at(istart) = 1;
+			istart--;
+		}
 
-		// create row reversed
-		int rowend = xlength - 1;
-		list reversedRow(xlength);
-		for (int i = rowend; i != rowend - rowsum; i--)
-			reversedRow.at(i) = 1;
-		mr.at(y) = reversedRow;
+		pm.at(y) = row;
 	}
 
 	// calculate column sums
-	list sorted(xlength);
-	for (int x = 0; x < xlength; x++)
-		for (int y = 0; y < ylength; y++)
-			sorted.at(x) += mr.at(y).at(x);
+	list sorted = ColumnSums(pm);
 
 	// calculate actual values
 	for (auto i = sorted.begin(); i != sorted.end(); ++i)
-		*i += difference;
+		*i -= offset;
 
 	return sorted;
 }
